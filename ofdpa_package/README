@@ -1,0 +1,43 @@
+This document describes how to install the OFDPA software provided in
+this package on the Agema AGC7648 switch.
+
+Pre-requisites:  The switch must have ONL(Open Network Linux) installed via ONIE.
+    Must log in as user root, password is onl
+    All commands run as root user.
+
+Downloading and running OFDPA
+============================================================
+* download the OFDPA package
+    root@localhost:~# tftp IPaddress
+    tftp> binary
+    tftp> get ofdpa-agc7648a_0.3.0.3.1_amd64.deb
+    tftp> quit
+   
+* Install the OFDPA package
+    root@localhost:~# dpkg -i ofdpa-agc7648a_0.3.0.3.1_amd64.deb
+
+    Note:  It may be necessary to run the following command before installing
+           OFDPA because sometimes the ONIE install leaves some packages
+           in a half-configured state:
+
+           dpkg --configure -a
+
+* Insert kernel modules and launch ofdpa, then the switch will be ready to run anyone of the applications. 
+    root@localhost:~# cd /broadcom/ofdpa
+    root@localhost:/broadcom/ofdpa# mknod /dev/linux-kernel-bde c 127 0
+    root@localhost:/broadcom/ofdpa# mknod /dev/linux-user-bde c 126 0
+    root@localhost:/broadcom/ofdpa# insmod linux-kernel-bde.ko
+    root@localhost:/broadcom/ofdpa# insmod linux-user-bde.ko
+    root@localhost:/broadcom/ofdpa# ./ofdpa &
+    root@localhost:/broadcom/ofdpa# ./client_drivshell ps
+
+
+* Breakout to 100G, 40G, 25G or 10G configuration
+    root@localhost:~# cd  /broadcom/ofdpa
+    root@localhost:/broadcom/ofdpa# cp -af 100G-ofdpa_rc.cfg ofdpa_rc.cfg    //for breakout to 100G
+    root@localhost:/broadcom/ofdpa# cp -af 40G-ofdpa_rc.cfg ofdpa_rc.cfg     //for breakout to 40G
+    root@localhost:/broadcom/ofdpa# cp -af 25G-ofdpa_rc.cfg ofdpa_rc.cfg     //for breakout to 25G
+    root@localhost:/broadcom/ofdpa# cp -af 10G-ofdpa_rc.cfg ofdpa_rc.cfg     //for breakout to 10G
+    root@localhost:/broadcom/ofdpa# ./ofdpa &
+    root@localhost:/broadcom/ofdpa# ./client_drivshell ps
+
